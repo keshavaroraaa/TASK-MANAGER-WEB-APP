@@ -26,7 +26,6 @@ task-manager/
 │   │   └── taskRoutes.js        ← /api/tasks endpoints (protected)
 │   ├── server.js                ← Main entry point
 │   ├── package.json             ← Dependencies
-│   └── .env.example             ← Copy this to .env and fill in values
 │
 └── frontend/
     ├── index.html               ← Landing page
