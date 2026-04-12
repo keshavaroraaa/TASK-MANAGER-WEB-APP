@@ -1,1 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Create your TaskMate account and start managing tasks efficiently." />
+  <title>Sign Up — TaskMate</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="script.js" defer></script>
+</head>
+<body class="auth-page">
 
+  <div class="auth-container">
+    <div class="auth-card">
+      <a href="index.html" class="auth-logo">✅ TaskMate</a>
+      <h2>Create Your Account</h2>
+      <p class="auth-subtitle">Start managing your tasks today</p>
+
+      <div id="error-msg" class="alert alert-error hidden"></div>
+      <div id="success-msg" class="alert alert-success hidden"></div>
+
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" placeholder="Jane Smith" />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" placeholder="you@example.com" />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Minimum 6 characters" />
+      </div>
+
+      <button id="signup-btn" class="btn btn-primary btn-full">
+        Create Account
+      </button>
+
+      <p class="auth-switch">
+        Already have an account? <a href="login.html">Log in here</a>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("signup-btn").addEventListener("click", async () => {
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const errorBox = document.getElementById("error-msg");
+      const successBox = document.getElementById("success-msg");
+
+      errorBox.classList.add("hidden");
+      successBox.classList.add("hidden");
+
+      if (!name || !email || !password) {
+        showError(errorBox, "Please fill in all fields.");
+        return;
+      }
+
+      if (password.length < 6) {
+        showError(errorBox, "Password must be at least 6 characters.");
+        return;
+      }
+
+      const btn = document.getElementById("signup-btn");
+      btn.textContent = "Creating account...";
+      btn.disabled = true;
+
+      try {
+        const data = await apiRequest("/api/auth/signup", "POST", { name, email, password });
+
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+
+        successBox.textContent = "Account created! Redirecting...";
+        successBox.classList.remove("hidden");
+
+        setTimeout(() => {
+          window.location.href = "dashboard.html";
+        }, 1000);
+      } catch (err) {
+        showError(errorBox, err.message);
+        btn.textContent = "Create Account";
+        btn.disabled = false;
+      }
+    });
+  </script>
+
+</body>
+</html>
