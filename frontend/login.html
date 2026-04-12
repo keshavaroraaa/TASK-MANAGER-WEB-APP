@@ -1,1 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Login to TaskMate and manage your tasks efficiently." />
+  <title>Login — TaskMate</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="script.js" defer></script>
+</head>
+<body class="auth-page">
 
+  <div class="auth-container">
+    <div class="auth-card">
+      <a href="index.html" class="auth-logo">✅ TaskMate</a>
+      <h2>Welcome Back</h2>
+      <p class="auth-subtitle">Log in to access your tasks</p>
+
+      <div id="error-msg" class="alert alert-error hidden"></div>
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" placeholder="you@example.com" />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Your password" />
+      </div>
+
+      <button id="login-btn" class="btn btn-primary btn-full">
+        Log In
+      </button>
+
+      <p class="auth-switch">
+        Don't have an account? <a href="signup.html">Sign up here</a>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("login-btn").addEventListener("click", async () => {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const errorBox = document.getElementById("error-msg");
+
+      errorBox.classList.add("hidden");
+      errorBox.textContent = "";
+
+      if (!email || !password) {
+        showError(errorBox, "Please fill in all fields.");
+        return;
+      }
+
+      const btn = document.getElementById("login-btn");
+      btn.textContent = "Logging in...";
+      btn.disabled = true;
+
+      try {
+        const data = await apiRequest("/api/auth/login", "POST", { email, password });
+
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+
+        window.location.href = "dashboard.html";
+      } catch (err) {
+        showError(errorBox, err.message);
+        btn.textContent = "Log In";
+        btn.disabled = false;
+      }
+    });
+  </script>
+
+</body>
+</html>
