@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:5000";
+const API_BASE = "https://task-manager-web-app-5tof.onrender.com";
 
 async function apiRequest(endpoint, method = "GET", body = null) {
   const options = {
